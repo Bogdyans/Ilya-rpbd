@@ -11,7 +11,7 @@ export default function BooksLayout({
     const session = getServerSession(authOptions);
 
     if (!session) {
-        redirect('/');
+        redirect('/authorize');
     }
 
     return (
