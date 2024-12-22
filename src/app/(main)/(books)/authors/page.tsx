@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { Author } from "@/app/libs/types"
 import AuthorCard from "@/app/(main)/(books)/authors/components/author-card";
 import {useSession} from "next-auth/react";
+import Link from "next/link";
+import {Button} from "@/components/ui/button";
 
 
 export default function AuthorsPage() {
@@ -67,13 +69,20 @@ export default function AuthorsPage() {
     return (
         <div className="min-h-screen bg-[#fff9e5]">
             <main className="container mx-auto px-4 py-8">
-                <h1 className="text-4xl font-bold text-[#8B4513] mb-2 text-center">Authors</h1>
-                <p className="text-center text-gray-600 mb-8">Discover the brilliant minds behind your favorite books</p>
-
+                <div className="flex flex-row mx-auto justify-evenly">
+                    <div>
+                        <h1 className="text-4xl font-bold text-[#8B4513] mb-2 text-center">Authors</h1>
+                        <p className="text-center text-gray-600 mb-8">Discover the brilliant minds behind your favorite
+                            books</p>
+                    </div>
+                    <Link href="/authors/add" className="h-full">
+                        <Button className="h-full bg-[#8B4513]">Add new Author</Button>
+                    </Link>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {authors.map((author) => (
 
-                        <AuthorCard author={author} key={author.id} processLike={processLike} />
+                        <AuthorCard author={author} key={author.id} processLike={processLike}/>
 
                     ))}
                 </div>

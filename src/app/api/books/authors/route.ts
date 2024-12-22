@@ -1,4 +1,4 @@
-import { getAuthorsForPage } from "@/app/libs/data";
+import {createNewAuthor, getAuthorsForPage} from "@/app/libs/data";
 
 export async function GET(req: Request) {
     try {
@@ -17,4 +17,22 @@ export async function GET(req: Request) {
         return Response.json({ error }, { status: 500 });
     }
 }
+
+export async function POST(request: Request) {
+    try {
+        const { name, bdate, country, photopath, bio } = await request.json()
+
+        await createNewAuthor(name, bdate, country, photopath, bio);
+
+        return Response.json({ message: 'Author created successfully' }, { status: 201 })
+    } catch (error) {
+        console.log(error)
+        return Response.json(
+            { error: 'Failed to create author' },
+            { status: 500 }
+        )
+    }
+}
+
+
 

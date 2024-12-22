@@ -39,7 +39,7 @@ export async function createUser(username: string, hashedPassword: string) {
 export async function getUserById(id: string) {
     return withDbClient(async (client) => {
         const result = await client.sql`
-            SELECT * FROM users WHERE id = ${id}
+            SELECT id, username, register_date FROM users WHERE id = ${id}
         `;
 
         return result.rows[0] || null;
@@ -115,7 +115,7 @@ export async function getFavAuthorsInNum(user_id: string){
         `;
 
 
-        return result;
+        return result.rows[0];
     });
 }
 
@@ -191,7 +191,7 @@ export async function changeBookStatus(user_id: string, book_id: string, status:
         try {
             await client.sql`
             UPDATE book_stats
-            SET status = ${status}
+            SET status = ${status}, added_at = CURRENT_TIMESTAMP
             WHERE user_id = ${user_id} AND book_id = ${book_id};
         `
         } catch (e) {
@@ -219,7 +219,7 @@ export async function unlikeBook(user_id: string, book_id: string){
         try {
             await client.sql`
                 DELETE FROM fav_books
-                WHERE user_id = ${user_id} AND book_id = ${book_id});
+                WHERE user_id = ${user_id} AND book_id = ${book_id};
             `;
         }catch (e) {
             console.error(e);
@@ -227,7 +227,125 @@ export async function unlikeBook(user_id: string, book_id: string){
         }
     })
 }
+export async function getFavBooksInNum(user_id: string){
+    return withDbClient(async (client) => {
+        const result = await client.sql`
+            SELECT count(*) as sum FROM fav_books WHERE user_id = ${user_id};
+        `;
 
+
+        return result.rows[0];
+    });
+}
+export async function getWordsRead(user_id: string){
+    return withDbClient(async (client) => {
+        const result = await client.sql`
+            SELECT sum(b.num_of_words)
+            FROM books b, book_stats s
+            WHERE b.id = s.book_id AND s.user_id = ${user_id} AND s.status = 'completed';
+        `
+
+        return result.rows[0].sum;
+    })
+}
+export async function getBooksStats(user_id: string){
+    return withDbClient(async (client) => {
+        const result = await client.sql`
+            SELECT 
+                COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed,
+                COUNT(CASE WHEN status = 'reading' THEN 1 END) as reading,
+                COUNT(CASE WHEN status = 'dropped' THEN 1 END) as dropped
+            FROM 
+                book_stats
+            WHERE 
+                user_id = ${user_id};
+        `;
+
+        return result.rows[0];
+    })
+}
+
+export async function getLastBooksChanges(user_id: string){
+    return withDbClient(async (client) => {
+        const result = await client.sql`
+            SELECT 
+                bs.status as status, 
+                bs.book_id as id,
+                b.title as title,
+                b.cover_image as cover,
+                a.name as author,
+                bs.added_at as date
+            FROM 
+                book_stats bs
+            JOIN books b ON bs.book_id = b.id
+            JOIN authors a ON a.id = b.author_id
+            WHERE 
+                bs.user_id = ${user_id}
+            ORDER BY 
+                bs.added_at DESC 
+            LIMIT 3;
+        `;
+
+        return result.rows;
+    });
+}
+
+export async function createNewAuthor(name: string, bdate: string, country: string, photopath: string, bio: string){
+    return withDbClient(async (client) => {
+        try {
+            await client.sql`
+            INSERT INTO authors (name, bdate, country, photopath, bio)
+            VALUES (${name}, ${bdate}, ${country}, ${photopath}, ${bio})
+        `
+        } catch (e) {
+            console.log(e)
+            throw e
+        }
+    })
+}
+
+export async function findAuthors(query: string){
+    return withDbClient(async (client) => {
+        try {
+            const result = await client.sql`
+                SELECT id, name 
+                FROM authors 
+                WHERE name ILIKE ${`%${query}%`}
+                ORDER BY name
+                LIMIT 10
+            `
+
+            return result.rows;
+        } catch (e) {
+            console.log(e)
+            throw e
+        }
+
+    })
+}
+
+export async function getAuthorById(author_id: string){
+    return withDbClient(async (client) => {
+        const result = await client.sql`
+             SELECT id FROM authors WHERE id = ${author_id}
+        `
+        return result.rows;
+    })
+}
+
+export async function addBook(title, author_id, num_of_words, date_of_release, cover_image){
+    return withDbClient(async (client) => {
+        try {
+            await client.sql`
+            INSERT INTO books (title, author_id, num_of_words, date_of_release, cover_image)
+            VALUES (${title}, ${author_id}, ${num_of_words}, ${date_of_release}, ${cover_image})
+        `
+        } catch (e) {
+            console.log(e)
+            throw e;
+        }
+    })
+}
 ////
 //Set Up
 ////
@@ -326,10 +444,13 @@ export async function createTableStatusBooks() {
     return withDbClient(async (client) => {
         try {
             await client.sql`BEGIN;`
+            await client.sql`DROP TABLE book_stats`
             await client.sql`
-                CREATE TABLE fav_books (
+                CREATE TABLE book_stats (
                     user_id UUID,
                     book_id UUID,
+                    status book_status NOT NULL,
+                    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     PRIMARY KEY (user_id, book_id),
                     FOREIGN KEY (user_id) REFERENCES users(id),
                     FOREIGN KEY (book_id) REFERENCES books(id)

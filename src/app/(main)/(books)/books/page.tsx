@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Filter, Loader2 } from 'lucide-react'
 import {useSession} from "next-auth/react";
+import Link from "next/link";
 
 
 
@@ -48,19 +49,13 @@ export default function BooksPage() {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-amber-900">Books</h1>
                     <p className="text-gray-600">Explore our collection of literary treasures</p>
+
                 </div>
                 <div className="flex gap-4">
-                    <div className="relative flex-1 md:w-80">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-                        <Input
-                            placeholder="Search books..."
-                            className="pl-8"
-                        />
-                    </div>
-                    <Button variant="outline" size="icon">
-                        <Filter className="h-4 w-4" />
-                        <span className="sr-only">Filter books</span>
-                    </Button>
+
+                    <Link href="/books/add" className="h-full">
+                        <Button className="h-full bg-[#8B4513]">Add new Books</Button>
+                    </Link>
                 </div>
             </div>
             {isLoading && (

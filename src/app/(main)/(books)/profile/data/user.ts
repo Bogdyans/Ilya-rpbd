@@ -35,3 +35,30 @@ export const userData = {
     ]
 }
 
+export const recentBooks = [
+    {
+        id: 1,
+        title: "Pride and Prejudice",
+        author: "Jane Austen",
+        coverUrl: "/placeholder.svg?height=120&width=80",
+        status: "Completed",
+        statusColor: "bg-green-100 text-green-800"
+    },
+    {
+        id: 2,
+        title: "1984",
+        author: "George Orwell",
+        coverUrl: "/placeholder.svg?height=120&width=80",
+        status: "Reading",
+        statusColor: "bg-blue-100 text-blue-800"
+    },
+    {
+        id: 3,
+        title: "The Great Gatsby",
+        author: "F. Scott Fitzgerald",
+        coverUrl: "/placeholder.svg?height=120&width=80",
+        status: "Dropped",
+        statusColor: "bg-red-100 text-red-800"
+    }
+]
+
