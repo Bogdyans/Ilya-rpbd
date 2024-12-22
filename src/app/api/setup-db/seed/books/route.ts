@@ -1,8 +1,8 @@
-import {seedTableBooks} from "@/app/libs/data";
+import {seedBooks} from "@/app/libs/data";
 
 export async function GET() {
     try {
-        await seedTableBooks()
+        await seedBooks()
 
         return Response.json({ message: 'Table books seeded'});
     } catch (error) {

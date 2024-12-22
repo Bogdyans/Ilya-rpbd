@@ -1,6 +1,7 @@
 import Image from "next/image";
 import {Author} from "@/app/libs/types";
 import { Heart } from 'lucide-react'
+import {formatDate} from "@/app/libs/funcs";
 
 export default function AuthorCard({author, processLike}: {author: Author, processLike:  (aid: string, liked: boolean) => void}) {
 
@@ -21,7 +22,7 @@ export default function AuthorCard({author, processLike}: {author: Author, proce
             </div>
             <div className="p-6">
                 <h2 className="text-xl font-bold text-[#8B4513] mb-2">{author.name}</h2>
-                <p className="text-sm text-gray-500 mb-3">Born: {author.birthdate}</p>
+                <p className="text-sm text-gray-500 mb-3">Born: {formatDate(author.birthdate)}</p>
                 <p className="text-gray-600">{author.bio}</p>
             </div>
             <button

@@ -11,7 +11,7 @@ export default function MainPage() {
                 <h1 className="text-4xl font-bold text-center text-amber-800 mb-8">Welcome to BookWiki</h1>
                 <p className="text-center text-lg mb-12">Your gateway to the world of books and authors</p>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 gap-6">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center">
@@ -48,23 +48,6 @@ export default function MainPage() {
                         </CardFooter>
                     </Card>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Search className="mr-2" />
-                                Search
-                            </CardTitle>
-                            <CardDescription>Find exactly what you're looking for</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <p>Use our powerful search feature to find books, authors, or topics of interest.</p>
-                        </CardContent>
-                        <CardFooter>
-                            <Button asChild className="w-full">
-                                <Link href="/search">Start Searching</Link>
-                            </Button>
-                        </CardFooter>
-                    </Card>
                 </div>
             </>
 

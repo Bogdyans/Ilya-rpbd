@@ -5,10 +5,22 @@ import {getServerSession} from "next-auth/next";
 import {authOptions} from "@/app/api/auth/[...nextauth]/route";
 import ReadStats from "@/app/(main)/(books)/profile/components/read-stats";
 import FavAuthors from "@/app/(main)/(books)/profile/components/fav-authors";
+import {getUserById} from "@/app/libs/data";
 
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
+    const user = await getUserById(session.user.id)
 
+    console.log(user)
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return new Intl.DateTimeFormat('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        }).format(date);
+    };
 
     return (
         <div className="min-h-screen bg-[#fff9e5]">
@@ -18,17 +30,15 @@ export default async function ProfilePage() {
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                         <div className="relative w-32 h-32">
                             <Image
-                                src={userData.avatar}
-                                alt={userData.name}
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpBFbCgb0ajYdgdzEXKZ3Kg7y1Lc3upM0IDg&s"
+                                alt={user.username}
                                 fill
                                 className="rounded-full object-cover"
                             />
                         </div>
                         <div className="flex-1 text-center md:text-left">
-                            <h1 className="text-3xl font-bold text-[#8B4513] mb-2">{userData.name}</h1>
-                            <p className="text-gray-500 mb-2">@{userData.username}</p>
-                            <p className="text-gray-600 mb-4">{userData.bio}</p>
-                            <p className="text-sm text-gray-500">Member since {userData.joinDate}</p>
+                            <h1 className="text-3xl font-bold text-[#8B4513] mb-2">{user.username}</h1>
+                            <p className="text-sm text-gray-500">Member since {formatDate(user.register_date)}</p>
                         </div>
                     </div>
                 </div>

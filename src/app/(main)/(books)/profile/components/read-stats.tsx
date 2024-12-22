@@ -9,7 +9,6 @@ export default async function ReadStats({user_id}: {user_id: string}){
 
     const numOfFavAuthors = res.rows[0];
 
-
     return (
         <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold text-[#8B4513] mb-4 flex items-center gap-2">
@@ -27,7 +26,7 @@ export default async function ReadStats({user_id}: {user_id: string}){
                 <div className="p-4 bg-[#fff9e5] rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                         <Star className="w-5 h-5 text-[#8B4513]"/>
-                        <span className="text-gray-600">Reviewed</span>
+                        <span className="text-gray-600">Num of Favorite Books</span>
                     </div>
                     <p className="text-2xl font-bold text-[#8B4513]">WIP...</p>
                 </div>

@@ -6,8 +6,6 @@ export default async function FavAuthors({user_id}: {user_id: string}) {
     const res = await getFavAuthors(user_id);
 
     const authors = res.rows;
-    console.log(authors)
-
     return (
         <div className="md:col-span-2 bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold text-[#8B4513] mb-4 flex items-center gap-2">
